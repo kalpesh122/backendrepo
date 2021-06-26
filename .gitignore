@@ -1,3 +1,3 @@
+# Files We dont need in production or we dont push these files to the github repository
 node_modules/
-
 config/config.env
