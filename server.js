@@ -1,11 +1,11 @@
-// Loading the Express and dotenv file
+// Loading the  files
 const express = require('express')
 const dotenv = require('dotenv')
 const logger = require('./middleware/logger')
 const morgan = require('morgan')
 const colors = require('colors')
 const connectDB = require('./config/db')
-
+const errorHandler = require('./middleware/error')
 //Loading  env vars
 dotenv.config({ path: './config/config.env' })
 
@@ -28,6 +28,8 @@ if (process.env.NODE_ENV === 'development') {
 
 // Mount Routers
 app.use('/api/v1/bootcamps', bootcamps)
+
+app.use(errorHandler)
 
 ////////////////////////////////
 
