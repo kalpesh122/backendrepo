@@ -12,7 +12,7 @@ const {
 } = require('../controllers/bootcamps')
 
 // Include other resources routers
-const courseRouter = express.Router('./courses')
+const courseRouter = require('./courses')
 
 // Loader Express Router
 const router = express.Router()
