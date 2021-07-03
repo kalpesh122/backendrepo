@@ -9,7 +9,7 @@ const {
   updateBootcamp,
   deleteBootcamp,
   getBootcampInRadius,
-  bootcampPhotoUpload
+  bootcampPhotoUpload,
 } = require('../controllers/bootcamps')
 
 const Bootcamp = require('../models/Bootcamp')
@@ -21,15 +21,26 @@ const courseRouter = require('./courses')
 // Loader Express Router
 const router = express.Router()
 
+const { protect, authorize } = require('../middleware/auth')
+
 // re-route into other resource router
 router.use('/:bootcampId/courses', courseRouter)
 
 router.route('/radius/:zipcode/:distance').get(getBootcampInRadius)
-router.route('/').get(advancedResults(Bootcamp,'courses'), getBootcamps).post(createBootcamp)
+router
+  .route('/')
+  .get(advancedResults(Bootcamp, 'courses'), getBootcamps)
+  .post(protect, createBootcamp)
 
-router.route('/:id/photo').put(bootcampPhotoUpload)
+router
+  .route('/:id/photo')
+  .put(protect, authorize('publisher', 'admin'), bootcampPhotoUpload)
 
-router.route('/:id').get(getBootcamp).put(updateBootcamp).delete(deleteBootcamp)
+router
+  .route('/:id')
+  .get(getBootcamp)
+  .put(protect, authorize('publisher', 'admin'), updateBootcamp)
+  .delete(protect, authorize('publisher', 'admin'), deleteBootcamp)
 
 // Exporting the Router
 module.exports = router
