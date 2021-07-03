@@ -30,7 +30,7 @@ router.route('/radius/:zipcode/:distance').get(getBootcampInRadius)
 router
   .route('/')
   .get(advancedResults(Bootcamp, 'courses'), getBootcamps)
-  .post(protect, createBootcamp)
+  .post(protect,authorize('publisher', 'admin'), createBootcamp)
 
 router
   .route('/:id/photo')
