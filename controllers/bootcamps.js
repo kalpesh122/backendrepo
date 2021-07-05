@@ -54,7 +54,7 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
 // @route  PUT /api/v1/bootcamps/:id
 // @access Private (User Must be logged in)
 exports.updateBootcamp = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamp.findById(req.params.id)
+  let bootcamp = await Bootcamp.findById(req.params.id)
   // Check bootcamp exists
   if (!bootcamp) {
     return next(
@@ -62,7 +62,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
     )
   }
   // Make sure user is bootcamp owner
-  if (!bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
     return next(
       new ErrorResponse(
         `User ${req.params.id} is not authorized to update this bootcamp`,
@@ -150,7 +150,6 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
   if (!req.files) {
     return next(new ErrorResponse(`Please upload a file `, 400))
   }
-  // console.log(req.files)
 
   const file = req.files.file
   // Make sure the image is a photo
@@ -177,7 +176,6 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
     await Bootcamp.findByIdAndUpdate(req.params.id, { photo: file.name })
   })
 
-  //  console.log(file.name)
   res.status(200).json({
     success: true,
     data: file.name,

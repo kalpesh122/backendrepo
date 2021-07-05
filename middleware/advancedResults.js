@@ -1,5 +1,5 @@
-const advancedResults  =  (model,populate)=>async(req,res,next)=>{
-     let query
+const advancedResults = (model, populate) => async (req, res, next) => {
+  let query
 
   //Copy req.query string
   const reqQuery = { ...req.query }
@@ -9,8 +9,6 @@ const advancedResults  =  (model,populate)=>async(req,res,next)=>{
 
   // Loop over removeFields and delete them from reqQuery
   removeFields.forEach((param) => delete reqQuery[param])
-
-  console.log(reqQuery)
 
   //Create Query String
   let queryStr = JSON.stringify(reqQuery)
@@ -25,7 +23,7 @@ const advancedResults  =  (model,populate)=>async(req,res,next)=>{
   if (req.query.select) {
     const fields = req.query.select.split(',').join(' ')
     query = query.select(fields)
-    console.log(fields)
+    // console.log(fields)
   }
 
   //Sort
@@ -45,13 +43,12 @@ const advancedResults  =  (model,populate)=>async(req,res,next)=>{
 
   query = query.skip(startIndex).limit(limit)
 
-  if (!populate){
-      query = query.populate(populate)
+  if (populate) {
+    query = query.populate(populate)
   }
 
   // Executing the Query
   const results = await query
-
 
   //pagination result
   const pagination = {}
@@ -69,10 +66,10 @@ const advancedResults  =  (model,populate)=>async(req,res,next)=>{
     }
   }
   res.advancedResults = {
-      success:true,
-      count:results.length,
-      pagination,
-      data:results
+    success: true,
+    count: results.length,
+    pagination,
+    data: results,
   }
   next()
 }
